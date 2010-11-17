@@ -117,7 +117,7 @@ UNION SEL 110, 1, '', '' FROM cols_count
 UNION SEL 110, 2, '', 'ORDER BY' FROM cols_count
 
 UNION SEL 120, colindex, col,
-	'COALESCE(a.' || col || ', b.' || col || ')' ||
+	'COALESCE(' || col || '_a, ' || col || '_b)' ||
 	CASE WHEN lastindex = 'Y' THEN '' ELSE ',' END
 FROM cols
 WHERE isindex = 'Y'
