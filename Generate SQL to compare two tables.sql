@@ -70,10 +70,15 @@ FROM cols
 
 UNION SEL 30, 1, '', '    AS _num_mismatches,' FROM cols_count
 UNION SEL 30, 2, '', '    ' FROM cols_count
-UNION SEL 30, 3, '', '    TRIM(TRAILING '','' FROM TRIM(' FROM cols_count
+UNION SEL 30, 3, '', '    CASE' FROM cols_count
+UNION SEL 30, 4, '', '        WHEN ' || col || '_b' ||
+	' IS NULL THEN ''(Row only in ?table_a)''' FROM cols WHERE firstindex = 'Y'
+UNION SEL 30, 5, '', '        WHEN ' || col || '_a' ||
+	' IS NULL THEN ''(Row only in ?table_b)''' FROM cols WHERE firstindex = 'Y'
+UNION SEL 30, 6, '', '        ELSE TRIM(TRAILING '','' FROM TRIM(' FROM cols_count
 
 UNION SEL 40, colindex, col,
-	'    ' || CASE WHEN firstcol = 'Y' THEN '' ELSE '|| ' END ||
+	'            ' || CASE WHEN firstcol = 'Y' THEN '' ELSE '|| ' END ||
 	CASE WHEN skipcmp = 'Y' THEN '''''--' ELSE '' END ||
 	'CASE WHEN diff_' || col || ' = ''Y'' THEN ''' || col || ' (' ||
 		TRIM(colindex) || '/' || TRIM(colcount) || '), '' ELSE '''' END'
@@ -81,8 +86,9 @@ FROM cols
 INNER JOIN cols_count
 ON 1 = 1
 
-UNION SEL 50, 1, '', '    )) AS _mismatches,' FROM cols_count
-UNION SEL 50, 2, '', '    ' FROM cols_count
+UNION SEL 50, 1, '', '            ))' FROM cols_count
+UNION SEL 50, 2, '', '    END AS _mismatches,' FROM cols_count
+UNION SEL 50, 3, '', '    ' FROM cols_count
 
 UNION SEL 60, colindex, col,
 	'    a.' || col || ' ' || col || '_a, ' ||
