@@ -1,4 +1,4 @@
-﻿/* Generate a query which will compare two tables.
+/* Generate a query which will compare two tables.
  * The tables must have the same columns, and they
  * must both have a unique primary index that
  * references the same columns.
@@ -57,27 +57,27 @@ SEL 10(INT) section,
 	''(VARCHAR(6000)) "-- Compare 2 tables"
 FROM cols_count
 
-UNION SEL 10, 2, '', '-- Table "a": ?table_a' FROM cols_count
-UNION SEL 10, 3, '', '-- Table "b": ?table_b' FROM cols_count
-UNION SEL 10, 4, '', '' FROM cols_count
-UNION SEL 10, 5, '', 'SEL' FROM cols_count
+UNION ALL SEL 10, 2, '', '-- Table "a": ?table_a' FROM cols_count
+UNION ALL SEL 10, 3, '', '-- Table "b": ?table_b' FROM cols_count
+UNION ALL SEL 10, 4, '', '' FROM cols_count
+UNION ALL SEL 10, 5, '', 'SEL' FROM cols_count
 
-UNION SEL 20, colindex, col,
+UNION ALL SEL 20, colindex, col,
 	'    ' || CASE WHEN firstcol = 'Y' THEN '' ELSE '+ ' END ||
 	CASE WHEN skipcmp = 'Y' THEN '0--' ELSE '' END ||
 	'CASE WHEN diff_' || col || ' = ''Y'' THEN 1 ELSE 0 END'
 FROM cols
 
-UNION SEL 30, 1, '', '    AS _num_mismatches,' FROM cols_count
-UNION SEL 30, 2, '', '    ' FROM cols_count
-UNION SEL 30, 3, '', '    CASE' FROM cols_count
-UNION SEL 30, 4, '', '        WHEN ' || col || '_b' ||
+UNION ALL SEL 30, 1, '', '    AS _num_mismatches,' FROM cols_count
+UNION ALL SEL 30, 2, '', '    ' FROM cols_count
+UNION ALL SEL 30, 3, '', '    CASE' FROM cols_count
+UNION ALL SEL 30, 4, '', '        WHEN ' || col || '_b' ||
 	' IS NULL THEN ''(Row only in ?table_a)''' FROM cols WHERE firstindex = 'Y'
-UNION SEL 30, 5, '', '        WHEN ' || col || '_a' ||
+UNION ALL SEL 30, 5, '', '        WHEN ' || col || '_a' ||
 	' IS NULL THEN ''(Row only in ?table_b)''' FROM cols WHERE firstindex = 'Y'
-UNION SEL 30, 6, '', '        ELSE TRIM(TRAILING '','' FROM TRIM(' FROM cols_count
+UNION ALL SEL 30, 6, '', '        ELSE TRIM(TRAILING '','' FROM TRIM(' FROM cols_count
 
-UNION SEL 40, colindex, col,
+UNION ALL SEL 40, colindex, col,
 	'            ' || CASE WHEN firstcol = 'Y' THEN '' ELSE '|| ' END ||
 	CASE WHEN skipcmp = 'Y' THEN '''''--' ELSE '' END ||
 	'CASE WHEN diff_' || col || ' = ''Y'' THEN ''' || col || ' (' ||
@@ -86,11 +86,11 @@ FROM cols
 INNER JOIN cols_count
 ON 1 = 1
 
-UNION SEL 50, 1, '', '            ))' FROM cols_count
-UNION SEL 50, 2, '', '    END AS _mismatches,' FROM cols_count
-UNION SEL 50, 3, '', '    ' FROM cols_count
+UNION ALL SEL 50, 1, '', '            ))' FROM cols_count
+UNION ALL SEL 50, 2, '', '    END AS _mismatches,' FROM cols_count
+UNION ALL SEL 50, 3, '', '    ' FROM cols_count
 
-UNION SEL 60, colindex, col,
+UNION ALL SEL 60, colindex, col,
 	'    a.' || col || ' ' || col || '_a, ' ||
 	'b.' || col || ' ' || col || '_b, ' ||
 	'CASE '
@@ -100,29 +100,29 @@ UNION SEL 60, colindex, col,
 	'END AS diff_' || col || CASE WHEN lastcol = 'Y' THEN '' ELSE ',' END
 FROM cols
 
-UNION SEL 70, 1, '', '' FROM cols_count
-UNION SEL 70, 2, '', 'FROM ?table_a a' FROM cols_count
-UNION SEL 70, 3, '', '' FROM cols_count
-UNION SEL 70, 4, '', 'FULL OUTER JOIN ?table_b b' FROM cols_count
+UNION ALL SEL 70, 1, '', '' FROM cols_count
+UNION ALL SEL 70, 2, '', 'FROM ?table_a a' FROM cols_count
+UNION ALL SEL 70, 3, '', '' FROM cols_count
+UNION ALL SEL 70, 4, '', 'FULL OUTER JOIN ?table_b b' FROM cols_count
 
-UNION SEL 80, colindex, col,
+UNION ALL SEL 80, colindex, col,
 	CASE WHEN firstindex = 'Y' THEN 'ON' ELSE 'AND' END ||
 	' a.' || col || ' = b.' || col
 FROM cols
 WHERE isindex = 'Y'
 
-UNION SEL 90, 1, '', '' FROM cols_count
+UNION ALL SEL 90, 1, '', '' FROM cols_count
 
-UNION SEL 100, colindex, col,
+UNION ALL SEL 100, colindex, col,
 	CASE WHEN firstcol = 'Y' THEN 'WHERE' ELSE 'OR' END ||
 	CASE WHEN skipcmp = 'Y' THEN ' 1=0--' ELSE '' END ||
 	' diff_' || col || ' = ''Y'''
 FROM cols
 
-UNION SEL 110, 1, '', '' FROM cols_count
-UNION SEL 110, 2, '', 'ORDER BY' FROM cols_count
+UNION ALL SEL 110, 1, '', '' FROM cols_count
+UNION ALL SEL 110, 2, '', 'ORDER BY' FROM cols_count
 
-UNION SEL 120, colindex, col,
+UNION ALL SEL 120, colindex, col,
 	'COALESCE(' || col || '_a, ' || col || '_b)' ||
 	CASE WHEN lastindex = 'Y' THEN '' ELSE ',' END
 FROM cols
