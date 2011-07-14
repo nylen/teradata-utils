@@ -25,7 +25,7 @@ CREATE VOLATILE TABLE cols AS (
         
     FROM (
         SEL databasename, tablename, columnname,
-            ROW_NUMBER() OVER(ORDER BY columnid) colindex,
+            ROW_NUMBER() OVER(ORDER BY columnid) colindex
         FROM dbc.COLUMNS
         WHERE TRIM(databasename) || '.' || TRIM(tablename) = '?table_a'
     ) ca
